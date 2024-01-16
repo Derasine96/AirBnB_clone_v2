@@ -10,15 +10,17 @@ class FileStorage:
 
     def all(self, cls=None):
         """Returns the list of objects of one type of class"""
+        result = {}
         if cls:
-            result = [obj for obj in self.__objects.values()
-                      if isinstance(obj, cls)]
+            for key, val in self.__objects.items():
+                if isinstance(val, cls):
+                    result[key] = val
             return result
         return FileStorage.__objects
 
     def new(self, obj):
         """Adds new object to storage dictionary"""
-        self.all().update({obj.to_dict()['_class_'] + '.' + obj.id: obj})
+        self.all().update({obj.to_dict()['__class__'] + '.' + obj.id: obj})
 
     def save(self):
         """Saves storage dictionary to file"""
