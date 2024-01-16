@@ -2,13 +2,13 @@
 """This module defines a class to manage database storage for hbnb clone"""
 import os
 from sqlalchemy import create_engine, MetaData
-from models import User, State, City, Amenity, Place, Review
+from sqlalchemy.orm import sessionmaker, scoped_session
 
 
 class DBStorage:
     """ClassDB is the base class for managing database storage."""
     __engine = None
-    __session: set to None
+    __session = None
 
     def __init__(self):
         """Instatntiates a new engine"""
@@ -16,11 +16,12 @@ class DBStorage:
 
     def create_engine(self):
         """Create the SQLAlchemy engine."""
+        from models.base_model import BaseModel
         user = os.environ.get('HBNB_MYSQL_USER', 'default_user')
         password = os.environ.get('HBNB_MYSQL_PWD', 'default_password')
         host = os.environ.get('HBNB_MYSQL_HOST', 'localhost')
         database = os.environ.get('HBNB_MYSQL_DB', 'default_database')
-        connection_string = f'mysql+mysqlconnector://'
+        connection_string = f'mysql+mysqldb://'
         '{user}:{password}@{host}/{database}'
         if os.environ.get('HBNB_ENV') == 'test':
             metadata = MetaData(bind=create_engine
@@ -59,9 +60,7 @@ class DBStorage:
 
     def reload(self):
         """Create all tables in the database"""
-        from models.base_model import BaseModel
-        from sqlalchemy.orm import sessionmaker, scoped_session
+        from models.base_model import Base
         Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
         self.__session = scoped_session(Session)
-        from models.base import Base
         Base.metadata.create_all(self.__engine)
