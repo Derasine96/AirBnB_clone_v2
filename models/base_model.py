@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """This module defines a base class for all models in our hbnb clone"""
 import uuid
+import models
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, DateTime
@@ -39,20 +40,19 @@ class BaseModel:
         """Updates updated_at with current time when instance is changed"""
         from models import storage
         self.updated_at = datetime.now()
-        storage.new(self)
-        storage.save()
+        models.storage.new(self)
+        models.storage.save()
 
     def to_dict(self):
         """Convert instance into dict format"""
         instance_dict = self.__dict__.copy()
-        instance_dict.pop('_sa_instance_state', None)
         instance_dict['__class__'] = (str(type(self)).
                                       split('.')[-1]).split('\'')[0]
         instance_dict['created_at'] = self.created_at.isoformat()
         instance_dict['updated_at'] = self.updated_at.isoformat()
+        instance_dict.pop('_sa_instance_state', None)
         return instance_dict
 
     def delete(self):
         """delete the current instance from the storage models.storage"""
-        from models import storage
-        storage.delete(self)
+        models.storage.delete(self)
