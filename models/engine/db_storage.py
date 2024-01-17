@@ -3,6 +3,16 @@
 import os
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, scoped_session
+from sqlalchemy.ext.declarative import declarative_base
+from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
+
+
+Base = declarative_base()
 
 
 class DBStorage:
@@ -12,23 +22,21 @@ class DBStorage:
 
     def __init__(self):
         """Instatntiates a new engine"""
-        self.create_engine()
+        self.__engine = self.create_engine()
 
     def create_engine(self):
         """Create the SQLAlchemy engine."""
         from models.base_model import BaseModel
-        user = os.environ.get('HBNB_MYSQL_USER', 'default_user')
-        password = os.environ.get('HBNB_MYSQL_PWD', 'default_password')
+        user = os.environ.get('HBNB_MYSQL_USER', 'hbnb_dev')
+        password = os.environ.get('HBNB_MYSQL_PWD', 'hbnb_dev_pwd')
         host = os.environ.get('HBNB_MYSQL_HOST', 'localhost')
-        database = os.environ.get('HBNB_MYSQL_DB', 'default_database')
+        database = os.environ.get('HBNB_MYSQL_DB', 'hbnb_dev_db')
         connection_string = f'mysql+mysqldb://'
         '{user}:{password}@{host}/{database}'
+        engine = create_engine(connection_string, pool_pre_ping=True)
         if os.environ.get('HBNB_ENV') == 'test':
-            metadata = MetaData(bind=create_engine
-                                (connection_string, pool_pre_ping=True))
-            metadata.reflect()
-            metadata.drop_all()
-        self.__engine = create_engine(connection_string, pool_pre_ping=True)
+            Base.metadata.drop_all(engine)
+        return engine
 
     def all(self, cls=None):
         """this method must return a dictionary: like FileStorage
@@ -40,8 +48,8 @@ class DBStorage:
         if cls is not None:
             classes = [cls]
         result_dict = {}
-        for cls in classes:
-            objects = self.__session.query(cls).all()
+        for clas in classes:
+            objects = self.__session.query(clas).all()
             for obj in objects:
                 key = f"{obj.__class__.__name__}.{obj.id}"
                 result_dict[key] = obj
@@ -58,9 +66,13 @@ class DBStorage:
         """commit all changes of the current database session"""
         self.__session.commit()
 
+    def delete(self, obj=None):
+        """Delete obj from the current database session if not None"""
+        if obj is not None:
+            self.__session.delete(obj)
+
     def reload(self):
         """Create all tables in the database"""
-        from models.base_model import Base
         Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
         self.__session = scoped_session(Session)
         Base.metadata.create_all(self.__engine)

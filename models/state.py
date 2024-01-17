@@ -2,8 +2,8 @@
 """ State Module for HBNB project """
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from models.base_model import BaseModel
-from models.base_model import Base
+from models.base_model import BaseModel, Base
+from models.city import City
 
 
 class State(BaseModel, Base):
@@ -18,7 +18,6 @@ class State(BaseModel, Base):
     @property
     def get_cities(self):
         """Getter attribute that returns a list of City instances
-                with state_id equal to the current State.id
+            with state_id equal to the current State.id
         """
-        return [obj for obj in self.__objects.values()
-                if isinstance(obj, City) and obj.state_id == self.id]
+        return [city for city in self.places if city.state_id == self.id]
