@@ -2,15 +2,14 @@
 """Add a conditional depending of the value
      of the env variable HBNB_TYPE_STORAGE
 """
-import os
-from models.engine.db_storage import DBStorage
-from models.engine.file_storage import FileStorage
+from os import getenv
 
 
-storage_type = os.environ.get('HBNB_TYPE_STORAGE', 'db')
+storage_type = getenv('HBNB_TYPE_STORAGE')
 if storage_type == 'db':
+    from models.engine.db_storage import DBStorage
     storage = DBStorage()
-    storage.reload()
 else:
+    from models.engine.file_storage import FileStorage
     storage = FileStorage()
-    storage.reload()
+storage.reload()

@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 """This module defines a class to manage database storage for hbnb clone"""
-import os
-from sqlalchemy import create_engine, MetaData
+from os import getenv
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.ext.declarative import declarative_base
+from models.base_model import Base
 from models.user import User
 from models.state import State
 from models.city import City
@@ -21,22 +22,16 @@ class DBStorage:
     __session = None
 
     def __init__(self):
-        """Instatntiates a new engine"""
-        self.__engine = self.create_engine()
-
-    def create_engine(self):
         """Create the SQLAlchemy engine."""
-        from models.base_model import BaseModel
-        user = os.environ.get('HBNB_MYSQL_USER', 'hbnb_dev')
-        password = os.environ.get('HBNB_MYSQL_PWD', 'hbnb_dev_pwd')
-        host = os.environ.get('HBNB_MYSQL_HOST', 'localhost')
-        database = os.environ.get('HBNB_MYSQL_DB', 'hbnb_dev_db')
+        user = getenv('HBNB_MYSQL_USER')
+        passwd = getenv('HBNB_MYSQL_PWD')
+        host = getenv('HBNB_MYSQL_HOST')
+        db = getenv('HBNB_MYSQL_DB')
         connection_string = f'mysql+mysqldb://'
-        '{user}:{password}@{host}/{database}'
-        engine = create_engine(connection_string, pool_pre_ping=True)
-        if os.environ.get('HBNB_ENV') == 'test':
-            Base.metadata.drop_all(engine)
-        return engine
+        '{user}:{passwd}@{host}/{db}'
+        self.__engine = create_engine(connection_string, pool_pre_ping=True)
+        if getenv('HBNB_ENV') == 'test':
+            Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
         """this method must return a dictionary: like FileStorage
