@@ -4,6 +4,7 @@ from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
 from models.city import City
+import models
 
 
 class State(BaseModel, Base):
@@ -20,4 +21,8 @@ class State(BaseModel, Base):
         """Getter attribute that returns a list of City instances
             with state_id equal to the current State.id
         """
-        return [city for city in self.places if city.state_id == self.id]
+        city_list = []
+        for city in list(models.storage.all(City).values()):
+            if city.state_id == self.id:
+                city_list.append(city)
+        return city_list
