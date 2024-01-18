@@ -13,9 +13,6 @@ from models.place import Place
 from models.review import Review
 
 
-Base = declarative_base()
-
-
 class DBStorage:
     """ClassDB is the base class for managing database storage."""
     __engine = None
