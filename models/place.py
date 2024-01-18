@@ -57,16 +57,12 @@ class Place(BaseModel, Base):
 
         @property
         def amenities(self):
-            """Get/set linked Amenities."""
-            amenity_list = []
-            for amenity in list(models.storage.
-                                all(models.amenity.Amenity).values()):
-                if amenity.id in self.amenity_ids:
-                    amenity_list.append(amenity)
-                return amenity_list
+            """ Returns list of amenity ids """
+            return self.amenity_ids
 
         @amenities.setter
         def amenities(self, obj):
+            """ Appends amenity ids to the attribute """
             if type(obj) is models.amenity.Amenity:
                 if obj.id not in self.amenity_ids:
                     self.amenity_ids.append(obj.id)
