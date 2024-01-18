@@ -39,15 +39,21 @@ class DBStorage:
         Args:
             cls (_type_, optional): class. Defaults to None.
         """
-        classes = [User, State, City, Amenity, Place, Review]
-        if cls is not None:
-            classes = [cls]
         result_dict = {}
-        for clas in classes:
-            objects = self.__session.query(clas).all()
+        if cls:
+            if type(cls) is str:
+                cls = eval(cls)
+            objects = self.__session.query(cls).all()
             for obj in objects:
-                key = f"{obj.__class__.__name__}.{obj.id}"
+                key = f"{type(obj).__name__}.{obj.id}"
                 result_dict[key] = obj
+        else:
+            classes = [User, State, City, Amenity, Place, Review]
+            for clas in classes:
+                objects = self.__session.query(clas).all()
+                for obj in objects:
+                    key = f"{obj.__class__.__name__}.{obj.id}"
+                    result_dict[key] = obj
         return result_dict
 
     def new(self, obj):

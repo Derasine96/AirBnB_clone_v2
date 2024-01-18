@@ -13,11 +13,11 @@ class State(BaseModel, Base):
     name = Column(String(128), nullable=False)
     # For DBStorage
     cities = relationship('City', backref='state',
-                          cascade='all, delete-orphan')
+                          cascade='all, delete, delete-orphan')
 
     # For FileStorage
     @property
-    def get_cities(self):
+    def cities(self):
         """Getter attribute that returns a list of City instances
             with state_id equal to the current State.id
         """
