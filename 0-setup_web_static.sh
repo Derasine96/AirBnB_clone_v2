@@ -62,5 +62,3 @@ echo "server {
 
 # Restart NGINX
 sudo service nginx restart
-
-exit 0
