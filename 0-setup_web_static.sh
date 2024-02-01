@@ -1,9 +1,24 @@
 #!/usr/bin/env bash
 # A Bash script that sets up your web servers for the deployment of web_static
 
+# Check if Nginx is installed
+if ! command -v nginx &> /dev/null
+then
+    sudo apt-get update
+    sudo apt-get install nginx -y
+fi
+
 # Create folders
 sudo mkdir -p /data/web_static/{shared,releases/test}
-echo "Index html content" | sudo tee /data/web_static/releases/test/index.html > /dev/null
+echo "<html>
+  <head>
+  </head>
+  <body>
+    Holberton School
+  </body>
+</html>" | sudo tee /data/web_static/releases/test/index.html > /dev/null
+
+# Give ownership to /data
 sudo chown -R ubuntu:ubuntu /data/
 
 # Create a symbolic link
@@ -35,10 +50,9 @@ echo "server {
     location /hbnb_static/ {
         alias /data/web_static/current/;
     }
-}" | sudo tee $nginx_config
-
-# Test Configuration
-sudo nginx -t
+}" | sudo tee $nginx_config > /dev/null
 
 # Restart NGINX
 sudo service nginx restart
+
+exit 0
