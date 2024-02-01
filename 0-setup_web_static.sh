@@ -21,6 +21,11 @@ echo "<html>
 # Give ownership to /data
 sudo chown -R ubuntu:ubuntu /data/
 
+# Delete the symbolic link if it exists
+if [ -L /data/web_static/current ]; then
+    sudo rm /data/web_static/current
+fi
+
 # Create a symbolic link
 sudo ln -sfn /data/web_static/releases/test/ /data/web_static/current
 
