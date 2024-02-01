@@ -3,8 +3,7 @@
 sudo apt update -y
 
 # Check if Nginx is installed
-if ! command -v nginx &> /dev/null
-then
+if ! command -v nginx &> /dev/null; then
     sudo apt-get update
     sudo apt-get install nginx -y
 fi
