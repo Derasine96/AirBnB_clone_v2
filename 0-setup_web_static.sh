@@ -20,9 +20,6 @@ echo "<html>
   </body>
 </html>" | sudo tee /data/web_static/releases/test/index.html > /dev/null
 
-# Give ownership to /data
-sudo chown -R ubuntu:ubuntu /data/
-
 # Delete the symbolic link if it exists
 if [ -L /data/web_static/current ]; then
     sudo rm /data/web_static/current
@@ -30,6 +27,9 @@ fi
 
 # Create a symbolic link
 sudo ln -sf /data/web_static/releases/test/ /data/web_static/current
+
+# Give ownership to /data
+sudo chown -R ubuntu:ubuntu /data
 
 # Update NGINX configuration
 nginx_config="/etc/nginx/sites-available/default"
