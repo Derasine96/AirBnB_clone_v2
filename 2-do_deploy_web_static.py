@@ -25,13 +25,20 @@ def do_deploy(archive_path):
         run(cmd_extr)
 
         run("rm /tmp/{}".format(archive_name))
+        cmd_move = ("mv /data/web_static/releases/{0}/web_static/* "
+                    "/data/web_static/releases/{0}/").format(name_no_ext)
+        run(cmd_move)
+
+        cmd_remove_inner = ("rm -rf /data/web_static/releases/{}/web_static"
+                            .format(name_no_ext))
+        run(cmd_remove_inner)
         run("rm -rf /data/web_static/current")
 
         cmd_link = ("ln -s /data/web_static/releases/{}/ "
                     "/data/web_static/current").format(name_no_ext)
         run(cmd_link)
 
-        print("Deployment successful.")
+        print("New version deployed!")
         return True
     except Exception as e:
         print("Error during deployment:", str(e))
