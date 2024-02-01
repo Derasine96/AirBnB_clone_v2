@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # A Bash script that sets up your web servers for the deployment of web_static
+sudo apt update -y
 
 # Check if Nginx is installed
 if ! command -v nginx &> /dev/null
@@ -9,7 +10,9 @@ then
 fi
 
 # Create folders
-sudo mkdir -p /data/web_static/{shared,releases/test}
+mkdir -p /data/web_static/releases/test/
+mkdir -p /data/web_static/shared/
+
 echo "<html>
   <head>
   </head>
@@ -27,7 +30,7 @@ if [ -L /data/web_static/current ]; then
 fi
 
 # Create a symbolic link
-sudo ln -sfn /data/web_static/releases/test/ /data/web_static/current
+sudo ln -sf /data/web_static/releases/test/ /data/web_static/current
 
 # Update NGINX configuration
 nginx_config="/etc/nginx/sites-available/default"
