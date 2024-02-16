@@ -7,12 +7,6 @@ from models import storage
 app = Flask(__name__)
 
 
-@app.route('/', strict_slashes=False)
-def index():
-    """method for fetching data from the storage engine"""
-    data = storage.all()
-
-
 @app.teardown_appcontext
 def teardown_db(exception=None):
     """Define a teardown function to remove the SQLAlchemy session."""
