@@ -24,7 +24,10 @@ class DBStorage:
         passwd = getenv('HBNB_MYSQL_PWD')
         host = getenv('HBNB_MYSQL_HOST')
         db = getenv('HBNB_MYSQL_DB')
-        connection_string = f"mysql+mysqldb://{user}:{passwd}@{host}/{db}"
+        connection_string = (
+            "mysql+mysqldb://{}:{}@{}/{}"
+            .format(user, passwd, host, db)
+        )
         self.__engine = create_engine(connection_string, pool_pre_ping=True)
         if getenv('HBNB_ENV') == 'test':
             Base.metadata.drop_all(self.__engine)
@@ -41,14 +44,14 @@ class DBStorage:
                 cls = eval(cls)
             objects = self.__session.query(cls).all()
             for obj in objects:
-                key = f"{type(obj).__name__}.{obj.id}"
+                key = "{}.{}".format(type(obj).__name__, obj.id)
                 result_dict[key] = obj
         else:
             classes = [User, State, City, Amenity, Place, Review]
             for clas in classes:
                 objects = self.__session.query(clas).all()
                 for obj in objects:
-                    key = f"{obj.__class__.__name__}.{obj.id}"
+                    key = "{}.{}".format(obj.__class__.__name__, obj.id)
                     result_dict[key] = obj
         return result_dict
 
@@ -74,3 +77,7 @@ class DBStorage:
         sess = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sess)
         self.__session = Session()
+
+    def close(self):
+        """Close the current session."""
+        self.__session.close()
