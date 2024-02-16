@@ -33,11 +33,10 @@ def python_info(text):
     return 'Python {}'.format(text)
 
 
-@app.route('/number/<n>', strict_slashes=False)
+@app.route('/number/<int:n>', strict_slashes=False)
 def number(n):
     """A function that displays a number that must be an integer"""
-    n = int(n)
-    return '{} is a number'.format(n)
+    return '{:d} is a number'.format(n)
 
 
 if __name__ == "__main__":
