@@ -4,11 +4,11 @@
         <TITLE>HBNB</TITLE>
     </HEAD>
     <BODY>
-    {% if states is mapping %}
+    {% if state %}
         <H1>States</H1>
         <UL>
-        {% for state in states.values()|sort(attribute="name") %}
-            <LI>{{ state.id }}: <B>{{ state.name }}</B></LI>
+        {% for stat in state|sort(attribute="name") %}
+            <LI>{{ stat.id }}: <B>{{ stat.name }}</B></LI>
         {% endfor %}
         </UL>
     {% elif state is defined %}

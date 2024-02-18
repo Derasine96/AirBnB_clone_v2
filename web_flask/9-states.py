@@ -17,16 +17,16 @@ def teardown_db(exception=None):
 def states():
     """Method to list all states on a database"""
     states = storage.all("State").values()
-    return render_template('9-states.html', states=states)
+    return render_template('9-states.html', state=states)
 
 
 @app.route('/states/<id>', strict_slashes=False)
-def states_by_id():
+def states_by_id(id):
     """Displays an HTML page with info about <id>, if it exists."""
-        for state in storage.all("State").values():
-            if state.id == id:
-                return render_template("9-states.html", state=state)
-        return render_template("9-states.html")
+    for state in storage.all("State").values():
+        if state.id == id:
+            return render_template("9-states.html", state=state)
+    return render_template("9-states.html")
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
