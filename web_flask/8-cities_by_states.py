@@ -17,8 +17,7 @@ def teardown_db(exception=None):
 def list_cities():
     """Method to list all states on a database"""
     states = storage.all("State").values()
-    cities = storage.all("City"). values()
-    return render_template('7-states_list.html', cities=cities, states=states)
+    return render_template('8-cities_by_states.html', states=states)
 
 
 if __name__ == "__main__":
